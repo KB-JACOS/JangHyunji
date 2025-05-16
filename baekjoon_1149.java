@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class rename {
+public class baekjoon_1149 {
     static int[][] board;
     static int[][] dp;
     static int R = 0, G = 1, B = 2;
