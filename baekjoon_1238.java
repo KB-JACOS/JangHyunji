@@ -4,7 +4,6 @@ import java.util.*;
 public class baekjoon_1238 {
     static final int INF = 1_000_000_000;
     static List<List<Node>> graph;
-    static List<List<Node>> reversed;
 
     static class Node implements Comparable<Node> {
         int index, weight;
@@ -29,10 +28,8 @@ public class baekjoon_1238 {
         int X = Integer.parseInt(st.nextToken());
 
         graph = new ArrayList<>();
-        reversed = new ArrayList<>();
         for (int i = 0; i <= N; i++) {
             graph.add(new ArrayList<>());
-            reversed.add(new ArrayList<>());
         }
 
         for (int i = 0; i < M; i++) {
@@ -41,22 +38,24 @@ public class baekjoon_1238 {
             int v = Integer.parseInt(st.nextToken());
             int w = Integer.parseInt(st.nextToken());
             graph.get(u).add(new Node(v, w));
-            reversed.get(v).add(new Node(u, w));
         }
 
-        int[] fromX = getDist(X, graph, N);
-        int[] toX = getDist(X, reversed, N);
-
         int maxTime = 0;
+        int[] fromX = getDist(X, N);
+
         for (int i = 1; i <= N; i++) {
-            int roundTripTime = toX[i] + fromX[i];
+            if (i == X) continue;
+
+            int[] toX = getDist(i, N);
+            int roundTripTime = toX[X] + fromX[i];
+
             maxTime = Math.max(maxTime, roundTripTime);
         }
 
         System.out.println(maxTime);
     }
 
-    static int[] getDist(int start, List<List<Node>> g, int N) {
+    static int[] getDist(int start, int N) {
         int[] dist = new int[N + 1];
         Arrays.fill(dist, INF);
         dist[start] = 0;
@@ -69,7 +68,7 @@ public class baekjoon_1238 {
 
             if (cur.weight > dist[cur.index]) continue;
 
-            for (Node next : g.get(cur.index)) {
+            for (Node next : graph.get(cur.index)) {
                 int tempDist = dist[cur.index] + next.weight;
 
                 if (tempDist < dist[next.index]) {
