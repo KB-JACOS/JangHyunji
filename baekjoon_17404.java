@@ -19,33 +19,28 @@ public class baekjoon_17404 {
 			}
 		}
 
-		int[][][] dp = new int[N + 1][4][4];
-		for (int start = 1; start <= 3; start++) {
-			for (int c = 1; c <= 3; c++) {
-				if (start == c) dp[1][c][start] = cost[1][c];
-				else dp[1][c][start] = INF;
-			}
-		}
+		int res = Integer.MAX_VALUE;
+		int[][] dp = new int[N + 1][4];
 
-		for (int i = 2; i <= N; i++) {
-			for (int c = 1; c <= 3; c++) {
-				for (int start = 1; start <= 3; start++) {
-					if (c == R) dp[i][R][start] = Math.min(dp[i-1][G][start], dp[i-1][B][start]) + cost[i][R];
-					else if (c == G) dp[i][G][start] = Math.min(dp[i - 1][R][start], dp[i - 1][B][start]) + cost[i][G];
-					else dp[i][B][start] = Math.min(dp[i - 1][R][start], dp[i - 1][G][start]) + cost[i][B];
+		for (int start = 1; start <= 3; start++) {
+			for (int i = 1; i <= N; i++) {
+				Arrays.fill(dp[i], INF);
+			}
+			dp[1][start] = cost[1][start];
+
+			for (int i = 2; i <= N; i++) {
+				dp[i][R] = Math.min(dp[i - 1][G], dp[i - 1][B]) + cost[i][R];
+				dp[i][G] = Math.min(dp[i - 1][R], dp[i - 1][B]) + cost[i][G];
+				dp[i][B] = Math.min(dp[i - 1][R], dp[i - 1][G]) + cost[i][B];
+			}
+
+			for (int i = 1; i <= 3; i++) {
+				if (start != i) {
+					res = Math.min(res, dp[N][i]);
 				}
 			}
 		}
-
-		int res = INF;
-		for (int start = 1; start <= 3; start++) {
-			for (int c = 1; c <= 3; c++) {
-				if (start != c) {
-					res = Math.min(res, dp[N][c][start]);
-				}
-			}
-		}
-
+        
 		System.out.println(res);
 	}
 }
